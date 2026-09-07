@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1786409946864",
+    "name": "Emily",
+    "email": "emily@email.com",
+    "password": "$2b$10$/2CwkyP5TR4pnqCD/kh69OhnqqasWw9qzDYedivGc1CGGbWCu2nam"
+  },
+  {
+    "id": "1786410525415",
+    "name": "Ana",
+    "email": "ana@email.com",
+    "password": "123457"
+  },
+  {
+    "id": "1786410827069",
+    "name": "Sam",
+    "email": "sam@email.com",
+    "password": "$2b$10$xKhcmwLUeEraFOJY3BJVbuYfWmPTEZfwn5ZDag7AEb3ff5SR82Y0u"
+  },
+  {
+    "id": "1786485329945",
+    "name": "Laura",
+    "email": "laura@email.com",
+    "password": "$2b$10$jtM65tLdukb8tszE6AbHp.dZovmtgEKk7Bm.abpDKu7gUjyC79t22"
+  }
+]
