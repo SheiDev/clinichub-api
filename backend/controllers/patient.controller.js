@@ -38,9 +38,23 @@ const create = (req, res) => {
 const getAll = (req, res) => {
   const patients = getAllPatients();
 
+  const { name } = req.query;
+
+  const normalizeText = (text) =>
+    text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+  const filteredPatients = name
+    ? patients.filter((patient) =>
+        normalizeText(patient.name).includes(normalizeText(name))
+      )
+    : patients;
+
   res.status(200).json({
-    totalPatients: patients.length,
-    patients,
+    totalPatients: filteredPatients.length,
+    patients: filteredPatients,
   });
 };
 

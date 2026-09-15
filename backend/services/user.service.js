@@ -2,15 +2,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const { jwtSecret } = require("../config");
+
 const {
   getUsers,
   saveUsers,
   findUserByEmail,
-  updateUserPassword,
 } = require("../models/user.model");
-
-const isBcryptHash = (value) =>
-  typeof value === "string" && /^\$2[aby]\$/.test(value);
 
 const registerUser = (userData) => {
   if (!userData?.name || !userData?.email || !userData?.password) {
@@ -32,7 +29,10 @@ const registerUser = (userData) => {
     };
   }
 
-  const hashedPassword = bcrypt.hashSync(userData.password, 10);
+  const hashedPassword = bcrypt.hashSync(
+    userData.password,
+    10
+  );
 
   const newUser = {
     id: Date.now().toString(),
@@ -42,7 +42,6 @@ const registerUser = (userData) => {
   };
 
   users.push(newUser);
-
   saveUsers(users);
 
   const { password, ...userWithoutPassword } = newUser;
@@ -68,24 +67,10 @@ const loginUser = (userData) => {
     };
   }
 
-  let passwordCorrect = false;
-
-  if (isBcryptHash(user.password)) {
-    try {
-      passwordCorrect = bcrypt.compareSync(
-        userData.password,
-        user.password
-      );
-    } catch {
-      passwordCorrect = false;
-    }
-  } else if (user.password === userData.password) {
-    passwordCorrect = true;
-    updateUserPassword(
-      user.id,
-      bcrypt.hashSync(userData.password, 10)
-    );
-  }
+  const passwordCorrect = bcrypt.compareSync(
+    userData.password,
+    user.password
+  );
 
   if (!passwordCorrect) {
     return {
