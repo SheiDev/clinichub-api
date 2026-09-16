@@ -45,6 +45,6 @@ También: `GET /private` (para probar el token).
 
 ## Render
 
-URL: *(cuando esté desplegado)*
+URL: https://clinichub-api.onrender.com
 
 En Render: Root Directory `backend`, build `npm install`, start `node index.js`, y la variable `JWT_SECRET`.
