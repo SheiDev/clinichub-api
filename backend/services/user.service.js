@@ -7,21 +7,12 @@ const {
   getUsers,
   saveUsers,
   findUserByEmail,
-} = require("../models/user.model");
+} = require("../repositories/user.repository");
 
 const registerUser = (userData) => {
-  if (!userData?.name || !userData?.email || !userData?.password) {
-    return {
-      error: "Nombre, correo y contraseña son obligatorios",
-    };
-  }
-
   const users = getUsers();
 
-  const userExists = users.find(
-    (user) =>
-      user.email.toLowerCase() === userData.email.toLowerCase()
-  );
+  const userExists = findUserByEmail(userData.email);
 
   if (userExists) {
     return {
@@ -29,10 +20,7 @@ const registerUser = (userData) => {
     };
   }
 
-  const hashedPassword = bcrypt.hashSync(
-    userData.password,
-    10
-  );
+  const hashedPassword = bcrypt.hashSync(userData.password, 10);
 
   const newUser = {
     id: Date.now().toString(),
@@ -53,12 +41,6 @@ const registerUser = (userData) => {
 };
 
 const loginUser = (userData) => {
-  if (!userData?.email || !userData?.password) {
-    return {
-      error: "Correo y contraseña son obligatorios",
-    };
-  }
-
   const user = findUserByEmail(userData.email);
 
   if (!user) {
