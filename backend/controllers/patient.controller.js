@@ -6,112 +6,100 @@ const {
   deletePatientById,
 } = require("../services/patient.service");
 
-const isValidEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const create = (req, res, next) => {
+  try {
+    const patient = createPatient(req.body);
+
+    res.status(201).json({
+      message: "Paciente creado correctamente",
+      patient,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const create = (req, res) => {
-  const { name, email, phone, document } = req.body;
+const getAll = (req, res, next) => {
+  try {
+    const patients = getAllPatients();
 
-  // Validar campos obligatorios
-  if (!name || !email || !phone || !document) {
-    return res.status(400).json({
-      error: "Todos los campos son obligatorios",
+    const { name } = req.query;
+
+    const normalizeText = (text) =>
+      text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+    const filteredPatients = name
+      ? patients.filter((patient) =>
+          normalizeText(patient.name).includes(normalizeText(name))
+        )
+      : patients;
+
+    res.status(200).json({
+      totalPatients: filteredPatients.length,
+      patients: filteredPatients,
     });
+  } catch (error) {
+    next(error);
   }
-
-  // Validar correo
-  if (!isValidEmail(email)) {
-    return res.status(400).json({
-      error: "El correo electrónico no es válido",
-    });
-  }
-
-  const patient = createPatient(req.body);
-
-  res.status(201).json({
-    message: "Paciente creado correctamente",
-    patient,
-  });
 };
 
-const getAll = (req, res) => {
-  const patients = getAllPatients();
+const getById = (req, res, next) => {
+  try {
+    const patient = getPatientById(req.params.id);
 
-  const { name } = req.query;
+    if (!patient) {
+      return res.status(404).json({
+        error: "Paciente no encontrado",
+      });
+    }
 
-  const normalizeText = (text) =>
-    text
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-
-  const filteredPatients = name
-    ? patients.filter((patient) =>
-        normalizeText(patient.name).includes(normalizeText(name))
-      )
-    : patients;
-
-  res.status(200).json({
-    totalPatients: filteredPatients.length,
-    patients: filteredPatients,
-  });
+    res.status(200).json({
+      patient,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getById = (req, res) => {
-  const patient = getPatientById(req.params.id);
+const update = (req, res, next) => {
+  try {
+    const patient = updatePatientById(req.params.id, req.body);
 
-  if (!patient) {
-    return res.status(404).json({
-      error: "Paciente no encontrado",
+    if (!patient) {
+      return res.status(404).json({
+        error: "Paciente no encontrado",
+      });
+    }
+
+    res.status(200).json({
+      message: "Paciente actualizado correctamente",
+      patient,
     });
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json({
-    patient,
-  });
 };
 
-const update = (req, res) => {
-  const { email } = req.body;
+const remove = (req, res, next) => {
+  try {
+    const patient = deletePatientById(req.params.id);
 
-  // Si se está actualizando el email, validarlo
-  if (email && !isValidEmail(email)) {
-    return res.status(400).json({
-      error: "El correo electrónico no es válido",
+    if (!patient) {
+      return res.status(404).json({
+        error: "Paciente no encontrado",
+      });
+    }
+
+    res.status(200).json({
+      message: "Paciente eliminado correctamente",
+      patient,
     });
+  } catch (error) {
+    next(error);
   }
-
-  const patient = updatePatientById(
-    req.params.id,
-    req.body
-  );
-
-  if (!patient) {
-    return res.status(404).json({
-      error: "Paciente no encontrado",
-    });
-  }
-
-  res.status(200).json({
-    message: "Paciente actualizado correctamente",
-    patient,
-  });
-};
-
-const remove = (req, res) => {
-  const patient = deletePatientById(req.params.id);
-
-  if (!patient) {
-    return res.status(404).json({
-      error: "Paciente no encontrado",
-    });
-  }
-
-  res.status(200).json({
-    message: "Paciente eliminado correctamente",
-    patient,
-  });
 };
 
 module.exports = {

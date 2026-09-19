@@ -9,7 +9,7 @@ Repo: https://github.com/SheiDev/clinichub-api
 ```bash
 git clone https://github.com/SheiDev/clinichub-api.git
 cd clinichub-api/backend
-npm install
+pnpm install
 ```
 
 Crea un archivo `.env` en `backend/` (no se sube a GitHub):
@@ -20,10 +20,12 @@ JWT_SECRET=tu_secreto_jwt
 ```
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Queda en http://localhost:3000
+
+Los datos de entrada (registro, login, crear y actualizar pacientes) se validan con Zod: email real, nombre con al menos 2 caracteres, teléfono y documento con formato válido. Los espacios al inicio o al final se recortan.
 
 ## Rutas
 

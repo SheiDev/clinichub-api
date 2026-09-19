@@ -1,7 +1,7 @@
 const {
   getPatients,
   savePatients,
-} = require("../models/patient.model");
+} = require("../repositories/patient.repository");
 
 const createPatient = (patientData) => {
   const patients = getPatients();

@@ -5,8 +5,7 @@ const register = (req, res, next) => {
     const result = registerUser(req.body);
 
     if (result.error) {
-      const status = result.error.includes("obligatorios") ? 400 : 409;
-      return res.status(status).json(result);
+      return res.status(409).json(result);
     }
 
     res.status(201).json(result);
@@ -20,8 +19,7 @@ const login = (req, res, next) => {
     const result = loginUser(req.body);
 
     if (result.error) {
-      const status = result.error.includes("obligatorios") ? 400 : 401;
-      return res.status(status).json(result);
+      return res.status(401).json(result);
     }
 
     res.json(result);
